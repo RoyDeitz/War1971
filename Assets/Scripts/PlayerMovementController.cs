@@ -9,6 +9,8 @@ public class PlayerMovementController : MonoBehaviour
     public Joystick joystick;
     public Transform cameraTransform;
     public Transform spawnTransform;
+    public RectTransform center;
+    public RectTransform joystickDirection;
 
     //Player Movement Speed
     public float movementSpeed = 12f;
@@ -36,19 +38,20 @@ public class PlayerMovementController : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, 5f, groundLayer);
 
-        //float x = Input.GetAxis("Horizontal");
-        //float z = Input.GetAxis("Vertical");
-
         float x = joystick.Horizontal * movementSpeed;
         float z = joystick.Vertical * movementSpeed;
-      
-       
+
+    
         //Only change the movement Vector if grounded
         if (isGrounded)
         {
-            movementVector =transform.forward* z + transform.right * x;
-            
-       
+        
+            movementVector = new Vector3(x,0f,z);
+            if (Mathf.Abs(z) >= .4f || Mathf.Abs(x) > .4f)
+            {
+                transform.forward = movementVector;
+            }
+          
             if (movementVector.magnitude > 1f)
                 movementVector = movementVector.normalized;
         }
@@ -58,6 +61,7 @@ public class PlayerMovementController : MonoBehaviour
         //if (Input.GetKey(KeyCode.LeftShift) && z > 0 && isGrounded == true) movementVector = movementVector * sprintFactor;
 
         controller.Move(movementVector * movementSpeed * Time.deltaTime);
+        
 
         //Jump
         /*
