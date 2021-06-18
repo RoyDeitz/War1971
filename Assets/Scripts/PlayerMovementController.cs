@@ -50,7 +50,7 @@ public class PlayerMovementController : MonoBehaviour
         {
 
             movementVector = new Vector3(x, 0f, z);
-            
+            movementVector= movementVector.normalized;
             
             if (Mathf.Abs(z) >= .2f || Mathf.Abs(x) > .2f)
             {
