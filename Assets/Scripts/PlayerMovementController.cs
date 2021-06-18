@@ -14,6 +14,9 @@ public class PlayerMovementController : MonoBehaviour
 
     //Player Movement Speed
     public float movementSpeed = 12f;
+    public float runningSpeed;
+    public float walkingSpeed;
+    public float crouchungSpeed;
     public float sprintFactor = 2f;
     Vector3 movementVector;
 
@@ -41,19 +44,29 @@ public class PlayerMovementController : MonoBehaviour
         float x = joystick.Horizontal * movementSpeed;
         float z = joystick.Vertical * movementSpeed;
 
-    
+
         //Only change the movement Vector if grounded
         if (isGrounded)
         {
-        
-            movementVector = new Vector3(x,0f,z);
-            if (Mathf.Abs(z) >= .4f || Mathf.Abs(x) > .4f)
+
+            movementVector = new Vector3(x, 0f, z);
+            
+            
+            if (Mathf.Abs(z) >= .2f || Mathf.Abs(x) > .2f)
             {
                 transform.forward = movementVector;
+                
             }
-          
-            if (movementVector.magnitude > 1f)
+
+            if (Mathf.Abs(x) >= .99f || Mathf.Abs(z) >= .99f) movementSpeed = runningSpeed;
+            else movementSpeed = walkingSpeed;
+
+            if (movementVector.magnitude >1f)
+            {
                 movementVector = movementVector.normalized;
+                
+            }
+            
         }
 
         //Double the speed on sprint button
