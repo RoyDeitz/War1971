@@ -30,6 +30,10 @@ public class PlayerMovementController : MonoBehaviour
     public LayerMask groundLayer;
     bool isGrounded;
 
+
+    //animation
+    public Animator anim;
+
     void Start()
     {
         controller = gameObject.GetComponent<CharacterController>();
@@ -41,8 +45,8 @@ public class PlayerMovementController : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, 5f, groundLayer);
 
-        float x = joystick.Horizontal * movementSpeed;
-        float z = joystick.Vertical * movementSpeed;
+        float x = joystick.Horizontal;
+        float z = joystick.Vertical;
 
 
         //Only change the movement Vector if grounded
@@ -52,14 +56,17 @@ public class PlayerMovementController : MonoBehaviour
             movementVector = new Vector3(x, 0f, z);
             movementVector= movementVector.normalized;
             
-            if (Mathf.Abs(z) >= .2f || Mathf.Abs(x) > .2f)
+            if (Mathf.Abs(z) >= .1f || Mathf.Abs(x) > .1f)
             {
                 transform.forward = movementVector;
                 
             }
 
-            if (Mathf.Abs(x) >= .99f || Mathf.Abs(z) >= .99f) movementSpeed = runningSpeed;
+            if (Mathf.Abs(x) > .7f || Mathf.Abs(z) > .7f) movementSpeed = runningSpeed;
             else movementSpeed = walkingSpeed;
+
+            if (Mathf.Abs(x) > Mathf.Abs(z)) anim.SetFloat("Speed", Mathf.Abs(x));
+            else anim.SetFloat("Speed", Mathf.Abs(z));
 
             if (movementVector.magnitude >1f)
             {
