@@ -46,6 +46,18 @@ public class PlayerMovementController : MonoBehaviour
     public int rifleDamage;
     public int assaultRifleDamage;
 
+    //weapon
+    
+
+    public GameObject rifleHolster;
+    public GameObject smgHolster;
+    public GameObject knifeHolster;
+
+    public GameObject knife;
+    public GameObject smg;
+    public GameObject rifle;
+
+
 
     void Start()
     {
@@ -126,11 +138,27 @@ public class PlayerMovementController : MonoBehaviour
     public void Stab() 
     {
         anim.SetTrigger("Stab");
+        movementSpeed = 0f;
 
         RaycastHit hit;
         if (Physics.SphereCast(stabOrigin.position, stabRadius, stabOrigin.forward, out hit, stabMaxDistance, enemyLayer))
         {
             hit.collider.GetComponent<EnemyAI>().TakeDamage(knifeDamage);
         }
+    }
+
+    public void SelectMachineGun() 
+    {
+    
+    }
+    public void SelectRifle() 
+    {
+    
+    }
+    public void SelectKnife() 
+    {
+        knifeHolster.SetActive(false);
+        knife.SetActive(true);
+        anim.SetTrigger("DrawKnife");
     }
 }
