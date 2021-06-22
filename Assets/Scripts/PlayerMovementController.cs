@@ -34,6 +34,19 @@ public class PlayerMovementController : MonoBehaviour
     //animation
     public Animator anim;
 
+    //health,attack, and damage
+    public LayerMask enemyLayer;
+    public Transform stabOrigin;
+    public float stabRadius;
+    public float stabMaxDistance;
+
+    public int knifeDamage;
+    public int pistolDamage;
+    public int smgDamage;
+    public int rifleDamage;
+    public int assaultRifleDamage;
+
+
     void Start()
     {
         controller = gameObject.GetComponent<CharacterController>();
@@ -108,5 +121,16 @@ public class PlayerMovementController : MonoBehaviour
     public void ResetPos() 
     {
         transform.position = spawnTransform.position;
+    }
+
+    public void Stab() 
+    {
+        anim.SetTrigger("Stab");
+
+        RaycastHit hit;
+        if (Physics.SphereCast(stabOrigin.position, stabRadius, stabOrigin.forward, out hit, stabMaxDistance, enemyLayer))
+        {
+            hit.collider.GetComponent<EnemyAI>().TakeDamage(knifeDamage);
+        }
     }
 }
