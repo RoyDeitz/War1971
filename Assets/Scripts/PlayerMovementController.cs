@@ -68,6 +68,7 @@ public class PlayerMovementController : MonoBehaviour
     public int smgMagCapacity;
     public int smgCurrentMag;
     public float smgFiringRate;
+    public float smgReloadTime=1f;
     float burstInterval;
     bool isBurstFiring;
 
@@ -76,9 +77,11 @@ public class PlayerMovementController : MonoBehaviour
     public int rifleMagCapacity;
     public int rifleCurrentMag;
     public float rifleFiringRate;
+    public float rifleReloadTime=1f;
 
-    bool isFiring;
-    bool isStabbing;
+    bool isFiring=false;
+    bool isStabbing=false;
+    bool isReloading=false;
 
     public float stabbingInterval;
     float timeTillNextAction;
@@ -88,6 +91,7 @@ public class PlayerMovementController : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         isGrounded = false;
         transform.position = spawnTransform.position;
+        
     }
 
     void Update()
@@ -120,9 +124,10 @@ public class PlayerMovementController : MonoBehaviour
 
             }
             //stab, fire interval
-            if (isFiring || isStabbing)
+            if (isFiring || isStabbing|| isReloading)
             {
                 movementSpeed = 0f;
+                anim.SetFloat("Speed", 0f);
                 if (isStabbing)
                 {
                     if (timeTillNextAction >= 0)
@@ -134,7 +139,7 @@ public class PlayerMovementController : MonoBehaviour
                         isStabbing = false;
                     }
                 }
-                else if (isFiring) 
+                else if (isFiring)
                 {
                     if (timeTillNextAction >= 0)
                     {
@@ -150,13 +155,24 @@ public class PlayerMovementController : MonoBehaviour
                         {
                             isBurstFiring = false;
                         }
-                       
+
                     }
                     else
                     {
                         isFiring = false;
                     }
 
+                }
+                else if (isReloading) 
+                {
+                    if (timeTillNextAction >= 0)
+                    {
+                        timeTillNextAction -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        isReloading = false;
+                    }
                 }
             }
             else
@@ -204,7 +220,7 @@ public class PlayerMovementController : MonoBehaviour
 
     public void Stab()
     {
-        if (!isStabbing && !isFiring)
+        if (!isStabbing && !isFiring )
         {
             timeTillNextAction = stabbingInterval;
             isStabbing = true;
@@ -220,23 +236,69 @@ public class PlayerMovementController : MonoBehaviour
     }
     public void Shoot()
     {
-        if (!isFiring && !isStabbing)
+        if (!isFiring && !isStabbing && !isReloading)
         {
-            isFiring = true;
-            timeTillNextAction= smgFiringRate/10;
-
+            if (smgCurrentMag > 0)
+            {
+                isFiring = true;
+                timeTillNextAction = smgFiringRate / 10;
+            }
+            else
+            {
+                ReloadSMG();
+            }
         }
     }
 
     public void BurstFire() 
     {
-        if (!isBurstFiring) 
+        if (!isBurstFiring && !isReloading)
         {
-            isBurstFiring = true;
-            burstInterval = (1 / smgFiringRate);
-            anim.SetTrigger("SMGShoot");
+            if (smgCurrentMag > 0)
+            {
+                isBurstFiring = true;
+                burstInterval = (1 / smgFiringRate);
+                anim.SetTrigger("SMGShoot");
+                smgCurrentMag -= 1;
+            }
+            else 
+            {
+                ReloadSMG();
+            }
         }
     
+    }
+
+    public void ReloadSMG()
+    {
+        if (smgCurrentMag < smgMagCapacity)
+        {
+            if (smgCurrentAmmo > 0)
+            {
+                if (!isReloading)
+                {
+                    isReloading = true;
+                    timeTillNextAction = smgReloadTime;
+                    anim.SetTrigger("ReloadSMG");
+                    if (smgCurrentAmmo > smgMagCapacity)
+                    {
+                        smgCurrentAmmo -= (smgMagCapacity - smgCurrentMag);
+                        smgCurrentMag += (smgMagCapacity - smgCurrentMag);
+                    }
+                    else
+                    {
+                        smgCurrentMag = smgCurrentAmmo;
+                        smgCurrentAmmo = 0;
+                    }
+                }
+
+            }
+            else
+            {
+                //dry fire or switch weapon
+            }
+        }
+       
     }
     public void SelectMachineGun() 
     {

@@ -123,35 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!21 &9096487
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 'pencilMaterial
-
-    98208'
-  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 473d5661e2ba4b9bbd976b4fae44e362, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors:
-    - _Color: {r: 0.82089555, g: 0.82089555, b: 0.82089555, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &119264585
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +191,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124066782}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.7, y: 32.8, z: 66.7}
+  m_LocalPosition: {x: 29.7, y: 22.2, z: 66.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1040984464}
@@ -2598,7 +2569,7 @@ Camera:
     height: 1
   near clip plane: 0.05
   far clip plane: 3000
-  field of view: 60
+  field of view: 26.991467
   orthographic: 0
   orthographic size: 5
   m_Depth: 100
@@ -2726,11 +2697,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: e9a941c7345608b41bffe7f4986e7630, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e9a941c7345608b41bffe7f4986e7630, type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: e9a941c7345608b41bffe7f4986e7630, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e9a941c7345608b41bffe7f4986e7630, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2999,7 +2974,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 9096487}
+  - {fileID: 1314055653}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3197,7 +3172,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 82a820fef3047aa4599619a0714010c8, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 82a820fef3047aa4599619a0714010c8, type: 3}
       propertyPath: m_RootOrder
@@ -3322,8 +3297,8 @@ MonoBehaviour:
   center: {fileID: 1414357993}
   joystickDirection: {fileID: 372934299}
   movementSpeed: 0
-  runningSpeed: 190
-  walkingSpeed: 90
+  runningSpeed: 280
+  walkingSpeed: 80
   crouchungSpeed: 80
   jumpHeight: 200
   gravity: -400.81
@@ -3355,11 +3330,13 @@ MonoBehaviour:
   smgMagCapacity: 30
   smgCurrentMag: 30
   smgFiringRate: 10
+  smgReloadTime: 2
   rifleMaxAmmo: 15
   rifleCurrentAmmo: 12
   rifleMagCapacity: 5
   rifleCurrentMag: 5
   rifleFiringRate: 2
+  rifleReloadTime: 2
   stabbingInterval: 0.2
 --- !u!1 &1040984463
 GameObject:
@@ -3610,7 +3587,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: feae62d7e7b594c488a5ca2a2f038c50, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: feae62d7e7b594c488a5ca2a2f038c50, type: 3}
       propertyPath: m_RootOrder
@@ -3663,6 +3640,35 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: feae62d7e7b594c488a5ca2a2f038c50, type: 3}
   m_PrefabInstance: {fileID: 1292989721}
   m_PrefabAsset: {fileID: 0}
+--- !u!21 &1314055653
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 'pencilMaterial
+
+    118674'
+  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 473d5661e2ba4b9bbd976b4fae44e362, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors:
+    - _Color: {r: 0.82089555, g: 0.82089555, b: 0.82089555, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1315920927
 GameObject:
   m_ObjectHideFlags: 0
@@ -3728,7 +3734,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f947d8670a8c5484da37fa3b8febbf57, type: 2}
+  - {fileID: 2100000, guid: ba83e8a5dd778fb4aa280db763dec20d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
