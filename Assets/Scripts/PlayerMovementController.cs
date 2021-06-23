@@ -17,7 +17,7 @@ public class PlayerMovementController : MonoBehaviour
     public float runningSpeed;
     public float walkingSpeed;
     public float crouchungSpeed;
-    public float sprintFactor = 2f;
+  
     Vector3 movementVector;
 
     //Gravity/Jumping Velocity
@@ -47,8 +47,6 @@ public class PlayerMovementController : MonoBehaviour
     public int assaultRifleDamage;
 
     //weapon
-    
-
     public GameObject rifleHolster;
     public GameObject smgHolster;
     public GameObject knifeHolster;
@@ -57,7 +55,33 @@ public class PlayerMovementController : MonoBehaviour
     public GameObject smg;
     public GameObject rifle;
 
+    public enum CurrentWeapon
+    {
+        Knife,
+        SMG,
+        Rifle
+    }
+    public CurrentWeapon currentWeapon;
 
+    public int smgMaxAmmo;
+    public int smgCurrentAmmo;
+    public int smgMagCapacity;
+    public int smgCurrentMag;
+    public float smgFiringRate;
+    float burstInterval;
+    bool isBurstFiring;
+
+    public int rifleMaxAmmo;
+    public int rifleCurrentAmmo;
+    public int rifleMagCapacity;
+    public int rifleCurrentMag;
+    public float rifleFiringRate;
+
+    bool isFiring;
+    bool isStabbing;
+
+    public float stabbingInterval;
+    float timeTillNextAction;
 
     void Start()
     {
@@ -73,39 +97,82 @@ public class PlayerMovementController : MonoBehaviour
         float x = joystick.Horizontal;
         float z = joystick.Vertical;
 
+        
 
         //Only change the movement Vector if grounded
         if (isGrounded)
         {
 
             movementVector = new Vector3(x, 0f, z);
-            movementVector= movementVector.normalized;
-            
+            movementVector = movementVector.normalized;
+
             if (Mathf.Abs(z) >= .1f || Mathf.Abs(x) > .1f)
             {
                 transform.forward = movementVector;
-                
+
             }
 
-            if (Mathf.Abs(x) > .7f || Mathf.Abs(z) > .7f) movementSpeed = runningSpeed;
-            else movementSpeed = walkingSpeed;
+           
 
-            if (Mathf.Abs(x) > Mathf.Abs(z)) anim.SetFloat("Speed", Mathf.Abs(x));
-            else anim.SetFloat("Speed", Mathf.Abs(z));
-
-            if (movementVector.magnitude >1f)
+            if (movementVector.magnitude > 1f)
             {
                 movementVector = movementVector.normalized;
-                
+
             }
-            
+            //stab, fire interval
+            if (isFiring || isStabbing)
+            {
+                movementSpeed = 0f;
+                if (isStabbing)
+                {
+                    if (timeTillNextAction >= 0)
+                    {
+                        timeTillNextAction -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        isStabbing = false;
+                    }
+                }
+                else if (isFiring) 
+                {
+                    if (timeTillNextAction >= 0)
+                    {
+                        timeTillNextAction -= Time.deltaTime;
+
+                        BurstFire();
+
+                        if (burstInterval >= 0)
+                        {
+                            burstInterval -= Time.deltaTime;
+                        }
+                        else
+                        {
+                            isBurstFiring = false;
+                        }
+                       
+                    }
+                    else
+                    {
+                        isFiring = false;
+                    }
+
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(x) > .7f || Mathf.Abs(z) > .7f) movementSpeed = runningSpeed;
+                else movementSpeed = walkingSpeed;
+
+                if (Mathf.Abs(x) > Mathf.Abs(z)) anim.SetFloat("Speed", Mathf.Abs(x));
+                else anim.SetFloat("Speed", Mathf.Abs(z));
+            }
+
         }
 
-        //Double the speed on sprint button
+       
 
-        //if (Input.GetKey(KeyCode.LeftShift) && z > 0 && isGrounded == true) movementVector = movementVector * sprintFactor;
-
-        controller.Move(movementVector * movementSpeed * Time.deltaTime);
+            controller.Move(movementVector * movementSpeed * Time.deltaTime);
         
 
         //Jump
@@ -135,21 +202,51 @@ public class PlayerMovementController : MonoBehaviour
         transform.position = spawnTransform.position;
     }
 
-    public void Stab() 
+    public void Stab()
     {
-        anim.SetTrigger("Stab");
-        movementSpeed = 0f;
-
-        RaycastHit hit;
-        if (Physics.SphereCast(stabOrigin.position, stabRadius, stabOrigin.forward, out hit, stabMaxDistance, enemyLayer))
+        if (!isStabbing && !isFiring)
         {
-            hit.collider.GetComponent<EnemyAI>().TakeDamage(knifeDamage);
+            timeTillNextAction = stabbingInterval;
+            isStabbing = true;
+            anim.SetTrigger("Stab");
+
+
+            RaycastHit hit;
+            if (Physics.SphereCast(stabOrigin.position, stabRadius, stabOrigin.forward, out hit, stabMaxDistance, enemyLayer))
+            {
+                hit.collider.GetComponent<EnemyAI>().TakeDamage(knifeDamage);
+            }
+        }
+    }
+    public void Shoot()
+    {
+        if (!isFiring && !isStabbing)
+        {
+            isFiring = true;
+            timeTillNextAction= smgFiringRate/10;
+
         }
     }
 
+    public void BurstFire() 
+    {
+        if (!isBurstFiring) 
+        {
+            isBurstFiring = true;
+            burstInterval = (1 / smgFiringRate);
+            anim.SetTrigger("SMGShoot");
+        }
+    
+    }
     public void SelectMachineGun() 
     {
-    
+        smgHolster.SetActive(false);
+        knife.SetActive(false);
+        rifle.SetActive(false);
+        anim.SetTrigger("DrawSMG");
+        smg.SetActive(true);
+        knifeHolster.SetActive(true);
+        rifleHolster.SetActive(true);
     }
     public void SelectRifle() 
     {
@@ -158,7 +255,15 @@ public class PlayerMovementController : MonoBehaviour
     public void SelectKnife() 
     {
         knifeHolster.SetActive(false);
-        knife.SetActive(true);
+        smg.SetActive(false);
+        rifle.SetActive(false);
         anim.SetTrigger("DrawKnife");
+        knife.SetActive(true);
+        smgHolster.SetActive(true);
+        rifleHolster.SetActive(true);
     }
+
+   
+
+   
 }
