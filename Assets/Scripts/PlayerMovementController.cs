@@ -69,6 +69,7 @@ public class PlayerMovementController : MonoBehaviour
     public int smgCurrentMag;
     public float smgFiringRate;
     public float smgReloadTime=1f;
+    public int bulletsPerBurst = 6;
     float burstInterval;
     bool isBurstFiring;
 
@@ -108,8 +109,10 @@ public class PlayerMovementController : MonoBehaviour
         if (isGrounded)
         {
 
-            movementVector = new Vector3(x, 0f, z);
+            movementVector = new Vector3(x,0f, z);
             movementVector = movementVector.normalized;
+
+            // rotates the player according to joystick input
 
             if (Mathf.Abs(z) >= .1f || Mathf.Abs(x) > .1f)
             {
@@ -194,7 +197,7 @@ public class PlayerMovementController : MonoBehaviour
             {
                 if (Mathf.Abs(x) > .7f || Mathf.Abs(z) > .7f) movementSpeed = runningSpeed;
                 else movementSpeed = walkingSpeed;
-
+                
                 if (Mathf.Abs(x) > Mathf.Abs(z)) anim.SetFloat("Speed", Mathf.Abs(x));
                 else anim.SetFloat("Speed", Mathf.Abs(z));
             }
@@ -256,7 +259,7 @@ public class PlayerMovementController : MonoBehaviour
             if (smgCurrentMag > 0)
             {
                 isFiring = true;
-                timeTillNextAction = smgFiringRate / 10;
+                timeTillNextAction =bulletsPerBurst*(1/smgFiringRate) ;
             }
             else
             {
