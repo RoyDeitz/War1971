@@ -234,7 +234,7 @@ public class PlayerMovementController : MonoBehaviour
             }
         }
     }
-    public void Shoot()
+    public void ShootSMG()
     {
         if (!isFiring && !isStabbing && !isReloading)
         {
