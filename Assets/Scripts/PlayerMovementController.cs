@@ -91,6 +91,7 @@ public class PlayerMovementController : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         isGrounded = false;
         transform.position = spawnTransform.position;
+        currentWeapon = CurrentWeapon.Knife;
         
     }
 
@@ -141,27 +142,41 @@ public class PlayerMovementController : MonoBehaviour
                 }
                 else if (isFiring)
                 {
-                    if (timeTillNextAction >= 0)
+                    if (currentWeapon == CurrentWeapon.SMG)
                     {
-                        timeTillNextAction -= Time.deltaTime;
-
-                        BurstFire();
-
-                        if (burstInterval >= 0)
+                        if (timeTillNextAction >= 0)
                         {
-                            burstInterval -= Time.deltaTime;
+                            timeTillNextAction -= Time.deltaTime;
+
+                            BurstFire();
+
+                            if (burstInterval >= 0)
+                            {
+                                burstInterval -= Time.deltaTime;
+                            }
+                            else
+                            {
+                                isBurstFiring = false;
+                            }
+
                         }
                         else
                         {
-                            isBurstFiring = false;
+                            isFiring = false;
                         }
-
                     }
-                    else
+                    else if(currentWeapon== CurrentWeapon.Rifle)
                     {
-                        isFiring = false;
+                        if (timeTillNextAction >= 0)
+                        {
+                            timeTillNextAction -= Time.deltaTime;
+                        }
+                        else
+                        {
+                            isFiring = false;
+                            if (rifleCurrentMag <= 0) ReloadRifle();
+                        }
                     }
-
                 }
                 else if (isReloading) 
                 {
@@ -220,7 +235,7 @@ public class PlayerMovementController : MonoBehaviour
 
     public void Stab()
     {
-        if (!isStabbing && !isFiring )
+        if (!isStabbing && !isFiring && !isReloading && currentWeapon==CurrentWeapon.Knife )
         {
             timeTillNextAction = stabbingInterval;
             isStabbing = true;
@@ -236,7 +251,7 @@ public class PlayerMovementController : MonoBehaviour
     }
     public void ShootSMG()
     {
-        if (!isFiring && !isStabbing && !isReloading)
+        if (!isFiring && !isStabbing && !isReloading && currentWeapon==CurrentWeapon.SMG)
         {
             if (smgCurrentMag > 0)
             {
@@ -246,6 +261,23 @@ public class PlayerMovementController : MonoBehaviour
             else
             {
                 ReloadSMG();
+            }
+        }
+    }
+    public void ShootRifle()
+    {
+        if (!isFiring && !isStabbing && !isReloading && currentWeapon==CurrentWeapon.Rifle)
+        {
+            if (rifleCurrentMag > 0)
+            {
+                isFiring = true;
+                timeTillNextAction = 1/rifleFiringRate;
+                anim.SetTrigger("RifleShoot");
+                rifleCurrentMag -= 1;
+            }
+            else
+            {
+                ReloadRifle();
             }
         }
     }
@@ -300,29 +332,89 @@ public class PlayerMovementController : MonoBehaviour
         }
        
     }
+
+    public void ReloadRifle()
+    {
+        if (rifleCurrentMag < rifleMagCapacity)
+        {
+            if (rifleCurrentAmmo > 0)
+            {
+                if (!isReloading)
+                {
+                    isReloading = true;
+                    timeTillNextAction = rifleReloadTime;
+                    anim.SetTrigger("ReloadRifle");
+                    if (rifleCurrentAmmo > rifleMagCapacity)
+                    {
+                        rifleCurrentAmmo -= (rifleMagCapacity - rifleCurrentMag);
+                        rifleCurrentMag += (rifleMagCapacity - rifleCurrentMag);
+                    }
+                    else
+                    {
+                        rifleCurrentMag = rifleCurrentAmmo;
+                        rifleCurrentAmmo = 0;
+                    }
+                }
+
+            }
+            else
+            {
+                //dry fire or switch weapon
+            }
+        }
+
+    }
     public void SelectMachineGun() 
     {
-        smgHolster.SetActive(false);
-        knife.SetActive(false);
-        rifle.SetActive(false);
-        anim.SetTrigger("DrawSMG");
-        smg.SetActive(true);
-        knifeHolster.SetActive(true);
-        rifleHolster.SetActive(true);
+        if (currentWeapon != CurrentWeapon.SMG)
+        {
+            isReloading = true; // only for creating a pause
+            timeTillNextAction = .8f;
+            currentWeapon = CurrentWeapon.SMG;
+
+            smgHolster.SetActive(false);
+            knife.SetActive(false);
+            rifle.SetActive(false);
+            anim.SetTrigger("DrawSMG");
+            smg.SetActive(true);
+            knifeHolster.SetActive(true);
+            rifleHolster.SetActive(true);
+        }
     }
     public void SelectRifle() 
     {
-    
+        if (currentWeapon != CurrentWeapon.Rifle)
+        {
+            isReloading = true; // only for creating a pause
+            timeTillNextAction = .8f;
+            currentWeapon = CurrentWeapon.Rifle;
+
+            knifeHolster.SetActive(true);
+            smg.SetActive(false);
+            rifleHolster.SetActive(false);
+            anim.SetTrigger("DrawRifle");
+            rifle.SetActive(true);
+            knife.SetActive(false);
+            smgHolster.SetActive(true);
+        }
+        
     }
     public void SelectKnife() 
     {
-        knifeHolster.SetActive(false);
-        smg.SetActive(false);
-        rifle.SetActive(false);
-        anim.SetTrigger("DrawKnife");
-        knife.SetActive(true);
-        smgHolster.SetActive(true);
-        rifleHolster.SetActive(true);
+        if (currentWeapon != CurrentWeapon.Knife)
+        {
+            isReloading = true; // only for creating a pause
+            timeTillNextAction = .8f;
+            currentWeapon = CurrentWeapon.Knife;
+
+            knifeHolster.SetActive(false);
+            smg.SetActive(false);
+            rifle.SetActive(false);
+            anim.SetTrigger("DrawKnife");
+            knife.SetActive(true);
+            smgHolster.SetActive(true);
+            rifleHolster.SetActive(true);
+        }
     }
 
    
