@@ -9,8 +9,7 @@ public class PlayerMovementController : MonoBehaviour
     public Joystick joystick;
     public Transform cameraTransform;
     public Transform spawnTransform;
-    public RectTransform center;
-    public RectTransform joystickDirection;
+ 
 
     //Player Movement Speed
     public float movementSpeed = 12f;
@@ -240,7 +239,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (!isStabbing && !isFiring && !isReloading && currentWeapon==CurrentWeapon.Knife )
         {
-            timeTillNextAction = stabbingInterval;
+            timeTillNextAction = stabbingInterval+.3f;
             isStabbing = true;
             anim.SetTrigger("Stab");
 
@@ -259,7 +258,7 @@ public class PlayerMovementController : MonoBehaviour
             if (smgCurrentMag > 0)
             {
                 isFiring = true;
-                timeTillNextAction =bulletsPerBurst*(1/smgFiringRate) ;
+                timeTillNextAction =bulletsPerBurst*(1/smgFiringRate)+.7f ;
             }
             else
             {
