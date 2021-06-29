@@ -23,7 +23,7 @@ public class EnemyAI : MonoBehaviour
     public float movementSpeed = 12f;
     public float runningSpeed;
     public float walkingSpeed;
-    public float crouchungSpeed;
+    public float alertWalkingSpeed;
     Vector3 movementVector;
 
     //health and death
@@ -35,6 +35,7 @@ public class EnemyAI : MonoBehaviour
     {
     Guard,
     Suspicious,
+    Alert,
     Combat
     }
     public AlertLevel alertLevel;
@@ -53,23 +54,50 @@ public class EnemyAI : MonoBehaviour
     SMG,
     Pistol
     }
+    public Weapon weapon;
 
     CharacterController enemyController;
 
+    // Detection attributes
     public bool isPlayerFound=false;
     public bool isHeaing;
     public bool isObjFound;
+
     public Transform eyeTransform;
     public LineRenderer lr;
+    public Material safeObjMaterial;
+    public Material dangerObjMaterial;
     public Vector3 objPosition;
 
 
 
+    //weapon
+    public int smgMaxAmmo;
+    public int smgCurrentAmmo;
+    public int smgMagCapacity;
+    public int smgCurrentMag;
+    public float smgFiringRate;
+    public float smgReloadTime = 1f;
+    public int bulletsPerBurst = 6;
+    float burstInterval;
+    bool isBurstFiring;
+
+    public int rifleMaxAmmo;
+    public int rifleCurrentAmmo;
+    public int rifleMagCapacity;
+    public int rifleCurrentMag;
+    public float rifleFiringRate;
+    public float rifleReloadTime = 1f;
+
+    bool isFiring = false;
+    bool isReloading = false;
+    float timeTillNextAction;
 
     // Start is called before the first frame update
     void Start()
     {
         lr = GetComponent<LineRenderer>();
+        lr.material = safeObjMaterial;
         enemyController = GetComponent<CharacterController>();
     }
 
@@ -77,22 +105,81 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, 5f, groundLayer);
-
+        
+        if (alertLevel == AlertLevel.Guard) anim.SetInteger("AlertLevel",0);
+        else if (alertLevel == AlertLevel.Suspicious) anim.SetInteger("AlertLevel", 1);
+        else if (alertLevel == AlertLevel.Combat) anim.SetInteger("AlertLevel", 2);
+        
         if (isObjFound)
         {
             lr.positionCount = 2;
-            lr.startWidth = 5f;
+            lr.startWidth = 2f;
             lr.endWidth = 10;
             lr.SetPosition(0, eyeTransform.position);
             lr.SetPosition(1, objPosition);
 
+            if (isPlayerFound)
+            {
+                alertLevel = AlertLevel.Combat;
+                lr.material = dangerObjMaterial;
+                GameObject target = new GameObject();
+                target.transform.position = new Vector3(objPosition.x, transform.position.y, objPosition.z);
+                transform.LookAt(target.transform);
+                Destroy(target);
+
+                //shoot;
+                //ShootRifle();
+                InvokeRepeating("ShootRifle",.1f,rifleFiringRate+.3f);
+            }
+            else
+            {
+                //alertLevel = AlertLevel.Suspicious;
+                lr.material = safeObjMaterial;
+               
+                CancelInvoke();
+               
+            }
 
         }
         else 
         {
             lr.positionCount = 0;
+            lr.material = safeObjMaterial;
         }
+        //Shooting
+        if (isFiring || isReloading)
+        {
+            movementSpeed = 0f;
+            anim.SetFloat("Speed", 0f);
 
+            if (isFiring)
+            {
+                if (weapon == Weapon.Rifle)
+                {
+                    if (timeTillNextAction >= 0)
+                    {
+                        timeTillNextAction -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        isFiring = false;
+                        if (rifleCurrentMag <= 0) ReloadRifle();
+                    }
+                }
+            }
+            else if (isReloading)
+            {
+                if (timeTillNextAction >= 0)
+                {
+                    timeTillNextAction -= Time.deltaTime;
+                }
+                else
+                {
+                    isReloading = false;
+                }
+            }
+        }
+       
         //movement and gravity
 
         enemyController.Move(movementVector * movementSpeed * Time.deltaTime);
@@ -132,5 +219,53 @@ public class EnemyAI : MonoBehaviour
                 isDead = true;
             }
         }
+    }
+    public void ShootRifle()
+    {
+        if (!isFiring  && !isReloading && weapon==Weapon.Rifle)
+        {
+            if (rifleCurrentMag > 0)
+            {
+                isFiring = true;
+                timeTillNextAction = 1 / rifleFiringRate;
+                anim.SetTrigger("ShootRifle");
+                rifleCurrentMag -= 1;
+            }
+            else
+            {
+                ReloadRifle();
+            }
+        }
+    }
+    public void ReloadRifle()
+    {
+        if (rifleCurrentMag < rifleMagCapacity)
+        {
+            if (rifleCurrentAmmo > 0)
+            {
+                if (!isReloading)
+                {
+                    isReloading = true;
+                    timeTillNextAction = rifleReloadTime;
+                    anim.SetTrigger("ReloadRifle");
+                    if (rifleCurrentAmmo > rifleMagCapacity)
+                    {
+                        rifleCurrentAmmo -= (rifleMagCapacity - rifleCurrentMag);
+                        rifleCurrentMag += (rifleMagCapacity - rifleCurrentMag);
+                    }
+                    else
+                    {
+                        rifleCurrentMag = rifleCurrentAmmo;
+                        rifleCurrentAmmo = 0;
+                    }
+                }
+
+            }
+            else
+            {
+                //dry fire or switch weapon
+            }
+        }
+
     }
 }

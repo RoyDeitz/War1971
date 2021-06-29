@@ -16,18 +16,19 @@ public class EnemyFOV : MonoBehaviour
             {
                 enemyAI.isObjFound = true;
                 enemyAI.objPosition = other.transform.position;
-                StartCoroutine(Recognise(detectionTime, other));
-
+                if (!enemyAI.isPlayerFound)
+                {
+                    StartCoroutine(Recognise(detectionTime, other));
+                }
             }
             else
             {
-                //shoot
+                enemyAI.isObjFound = true;
+                enemyAI.isPlayerFound = true;
+                enemyAI.objPosition = other.transform.position;
             }
         }
-        else 
-        {
-        
-        }
+       
     }
 
     private void OnTriggerExit(Collider other)
@@ -36,6 +37,7 @@ public class EnemyFOV : MonoBehaviour
         {
             //set memory time
             // search routine
+            enemyAI.isPlayerFound = false;
             enemyAI.isObjFound = false;
         }
     }
@@ -43,6 +45,10 @@ public class EnemyFOV : MonoBehaviour
     IEnumerator Recognise(float time, Collider other)
     {
         yield return new WaitForSeconds(time);
+        if (other.tag == "Player") 
+        {
+            enemyAI.isPlayerFound = true;
+        }
 
     }
 }
