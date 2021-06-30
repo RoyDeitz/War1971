@@ -145,8 +145,8 @@ public class EnemyAI : MonoBehaviour
                 Destroy(target);
 
                 //shoot;
-                //ShootRifle();
-                InvokeRepeating("ShootRifle",rifleFiringRate,rifleFiringRate+1f);
+                ShootRifle();
+                //InvokeRepeating("ShootRifle",rifleFiringRate,rifleFiringRate+1f);
             }
             else
             {
@@ -154,7 +154,7 @@ public class EnemyAI : MonoBehaviour
                 //alertLevel = AlertLevel.Suspicious;
                 lr.material = safeObjMaterial;
                 SniperScope.SetActive(false);
-                CancelInvoke();
+                //CancelInvoke();
                
             }
 
@@ -162,7 +162,7 @@ public class EnemyAI : MonoBehaviour
         else 
         {
             SniperScope.SetActive(false);
-            CancelInvoke();
+            //CancelInvoke();
             lr.positionCount = 0;
             lr.material = safeObjMaterial;
         }
@@ -247,7 +247,7 @@ public class EnemyAI : MonoBehaviour
             if (rifleCurrentMag > 0)
             {
                 isFiring = true;
-                timeTillNextAction = 1 / rifleFiringRate;
+                timeTillNextAction = rifleFiringRate;
                 anim.SetTrigger("ShootRifle");
                 rifleCurrentMag -= 1;
             }

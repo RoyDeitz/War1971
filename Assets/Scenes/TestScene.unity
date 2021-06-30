@@ -218,7 +218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &20351763
 Transform:
   m_ObjectHideFlags: 0
@@ -396,6 +396,35 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.13955316, y: 0.08531061, z: 0.0000010728836}
     m_Extent: {x: 1.1080166, y: 0.34457543, z: 1.4174923}
   m_DirtyAABB: 0
+--- !u!21 &37509718
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 'pencilMaterial
+
+    371848'
+  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 473d5661e2ba4b9bbd976b4fae44e362, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors:
+    - _Color: {r: 0.82089555, g: 0.82089555, b: 0.82089555, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &37969488
 GameObject:
   m_ObjectHideFlags: 0
@@ -3099,12 +3128,12 @@ MonoBehaviour:
   smgFiringRate: 20
   smgReloadTime: 1.5
   bulletsPerBurst: 6
-  rifleMaxAmmo: 30
-  rifleCurrentAmmo: 30
+  rifleMaxAmmo: 40
+  rifleCurrentAmmo: 40
   rifleMagCapacity: 5
   rifleCurrentMag: 5
-  rifleFiringRate: 1.4
-  rifleReloadTime: 1.5
+  rifleFiringRate: 1.5
+  rifleReloadTime: 1.8
   SniperScope: {fileID: 1175190294}
   mainCamera: {fileID: 333286383}
   scopeDistance: 0.05
@@ -3284,12 +3313,12 @@ MonoBehaviour:
   smgFiringRate: 20
   smgReloadTime: 1.5
   bulletsPerBurst: 6
-  rifleMaxAmmo: 30
-  rifleCurrentAmmo: 30
+  rifleMaxAmmo: 40
+  rifleCurrentAmmo: 40
   rifleMagCapacity: 5
   rifleCurrentMag: 5
-  rifleFiringRate: 1.4
-  rifleReloadTime: 1.5
+  rifleFiringRate: 1.5
+  rifleReloadTime: 1.8
   SniperScope: {fileID: 1006671784}
   mainCamera: {fileID: 333286383}
   scopeDistance: 0.05
@@ -4382,7 +4411,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &413421287
 Transform:
   m_ObjectHideFlags: 0
@@ -5391,7 +5420,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &743990767
 Transform:
   m_ObjectHideFlags: 0
@@ -6074,7 +6103,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1040547961}
+  - {fileID: 37509718}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6536,35 +6565,6 @@ MonoBehaviour:
   rifleFiringRate: 1.4
   rifleReloadTime: 1.5
   stabbingInterval: 0.2
---- !u!21 &1040547961
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 'pencilMaterial
-
-    353612'
-  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 473d5661e2ba4b9bbd976b4fae44e362, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors:
-    - _Color: {r: 0.82089555, g: 0.82089555, b: 0.82089555, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &1040984463
 GameObject:
   m_ObjectHideFlags: 0
