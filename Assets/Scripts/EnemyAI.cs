@@ -89,6 +89,11 @@ public class EnemyAI : MonoBehaviour
     public float rifleFiringRate;
     public float rifleReloadTime = 1f;
 
+    public GameObject SniperScope;
+    public Transform mainCamera;
+    public float scopeDistance=.08f;
+    public float scopeAdjustmentHeight = 30f;
+
     bool isFiring = false;
     bool isReloading = false;
     float timeTillNextAction;
@@ -99,6 +104,7 @@ public class EnemyAI : MonoBehaviour
         lr = GetComponent<LineRenderer>();
         lr.material = safeObjMaterial;
         enemyController = GetComponent<CharacterController>();
+        SniperScope.SetActive(false);
     }
 
     // Update is called once per frame
@@ -116,7 +122,7 @@ public class EnemyAI : MonoBehaviour
             lr.startWidth = 2f;
             lr.endWidth = 10;
             lr.SetPosition(0, eyeTransform.position);
-            lr.SetPosition(1, objPosition);
+            //lr.SetPosition(1,objPosition);
 
             if (isPlayerFound)
             {
@@ -125,17 +131,29 @@ public class EnemyAI : MonoBehaviour
                 GameObject target = new GameObject();
                 target.transform.position = new Vector3(objPosition.x, transform.position.y, objPosition.z);
                 transform.LookAt(target.transform);
+                if (enemyType == EnemyType.Sniper)
+                {
+                    Vector3 scopeTarget = new Vector3(target.transform.position.x, target.transform.position.y + scopeAdjustmentHeight, target.transform.position.z);
+                    Vector3 direction = mainCamera.position -scopeTarget;
+                    SniperScope.SetActive(true);
+                    //SniperScope.transform.position = direction *(Vector3.Distance(mainCamera.position,target.transform.position)/ 40);
+                    SniperScope.transform.position =scopeTarget+ direction * scopeDistance;
+                    SniperScope.transform.rotation = mainCamera.rotation;
+                    SniperScope.SetActive(true);
+                }
+                lr.SetPosition(1, new Vector3(objPosition.x,objPosition.y+ 35,objPosition.z));
                 Destroy(target);
 
                 //shoot;
                 //ShootRifle();
-                InvokeRepeating("ShootRifle",.1f,rifleFiringRate+.3f);
+                InvokeRepeating("ShootRifle",rifleFiringRate,rifleFiringRate+1f);
             }
             else
             {
+                lr.SetPosition(1, objPosition);
                 //alertLevel = AlertLevel.Suspicious;
                 lr.material = safeObjMaterial;
-               
+                SniperScope.SetActive(false);
                 CancelInvoke();
                
             }
@@ -143,6 +161,8 @@ public class EnemyAI : MonoBehaviour
         }
         else 
         {
+            SniperScope.SetActive(false);
+            CancelInvoke();
             lr.positionCount = 0;
             lr.material = safeObjMaterial;
         }

@@ -40,6 +40,8 @@ public class EnemyFOV : MonoBehaviour
             enemyAI.isPlayerFound = false;
             enemyAI.isObjFound = false;
         }
+        enemyAI.isPlayerFound = false;
+        enemyAI.isObjFound = false;
     }
 
     IEnumerator Recognise(float time, Collider other)
