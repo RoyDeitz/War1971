@@ -133,7 +133,7 @@ public class EnemyAI : MonoBehaviour
                 transform.LookAt(target.transform);
                 if (enemyType == EnemyType.Sniper)
                 {
-                    Vector3 scopeTarget = new Vector3(target.transform.position.x, target.transform.position.y + scopeAdjustmentHeight, target.transform.position.z);
+                    Vector3 scopeTarget = new Vector3(objPosition.x, objPosition.y + scopeAdjustmentHeight, objPosition.z);
                     Vector3 direction = mainCamera.position -scopeTarget;
                     SniperScope.SetActive(true);
                     //SniperScope.transform.position = direction *(Vector3.Distance(mainCamera.position,target.transform.position)/ 40);
